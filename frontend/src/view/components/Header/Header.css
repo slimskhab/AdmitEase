@@ -1,0 +1,39 @@
+.subtitle{
+    
+        font-size: 15px;
+        text-transform: uppercase;
+        line-height: 1.4;
+        letter-spacing: 2px;
+        color: var(--primary-color);
+    
+}
+
+.main-title{
+    font-size: 40px;
+    line-height: 1.2;
+    margin: 20px 0px;
+    text-align: start;
+}
+
+.features-container{
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+}
+
+.features-item{
+    display: flex;
+    padding: 20px;
+    align-items: center;
+}
+
+.features-item-icon{
+    padding-right: 20px;
+}
+.features-item-title{
+    font-size: 16px;
+    line-height: 1.8;
+    color: #FFFFFF;
+    font-weight: 700;
+    text-align: start;
+}

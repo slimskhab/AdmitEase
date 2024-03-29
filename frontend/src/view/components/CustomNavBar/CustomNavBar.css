@@ -1,0 +1,42 @@
+ul { 
+    padding: 0; 
+    list-style: none; 
+    display: table;
+    text-align: center;
+  }
+  li { 
+    display: table-cell; 
+    position: relative; 
+    margin-right: 20px;
+  }
+  a {
+    color: black;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    margin-right: 20px;
+
+  }
+  a:after {    
+    background: none repeat scroll 0 0 transparent;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 2px;
+    left: 50%;
+    position: absolute;
+    background: var(--primary-color);
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
+  }
+  a:hover:after { 
+    width: 100%; 
+    left: 0; 
+  }
+  @media screen and (max-height: 300px) {
+      ul {
+          margin-top: 40px;
+      }
+  }
+  
