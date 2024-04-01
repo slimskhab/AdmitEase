@@ -1,0 +1,16 @@
+
+
+.sidebar-item{
+    padding:10px 20px;
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+    background:white;
+    border-radius:5px;
+    margin:10px
+}
+
+.selected{
+    color: white;
+    background:var(--primary-color);
+}

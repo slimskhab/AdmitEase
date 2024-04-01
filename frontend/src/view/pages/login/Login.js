@@ -1,136 +1,159 @@
-import React from 'react';
+import React from "react";
 
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import CustomNavBar from '../../components/CustomNavBar/CustomNavBar';
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
+import { Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
 function Login(props) {
-    const [isSelected, setIsSelected] = useState(true);
-    const [loginError, setLoginError] = useState("");
-    const passwordRef = useRef();
-    const emailRef = useRef();
-    const navigate = useNavigate();
+  const [isSelected, setIsSelected] = useState(true);
+  const [loginError, setLoginError] = useState("");
 
-/*
-    useEffect(() => {
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
-        if (isLoggedIn) {
-            navigate('/');
-        }
-    }, [isLoggedIn]);
-*/
-    const handleLogin = () => {
-       /* if (isSelected) {
-            if ((emailRef.current.value==="admin@website.com")&&(passwordRef.current.value==="123")){
-                navigate("/admin-panel")
-                return;
+  const handleTeacherLogin = () => {
+    axios
+      .post(`${process.env.REACT_APP_BACKEND}/teacher/login`, {
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        navigate("/");
+      });
+  };
+
+  const handleStudentLogin = () => {
+    axios
+      .post(`${process.env.REACT_APP_BACKEND}/student/login`, {
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        navigate("/dashboard");
+      });
+  };
+
+  const handleLogin = () => {
+    if (isSelected) {
+      handleTeacherLogin();
+    } else {
+      handleStudentLogin();
+    }
+  };
+
+  const [isEmailError, setIsEmailError] = useState(false);
+  const handleEmailChange = (e) => {
+    if (e.target.value === "") {
+      setIsEmailError(true);
+    } else {
+      setIsEmailError(false);
+    }
+    setEmail(e.target.value);
+  };
+
+  
+  const [isPasswordError, setIsPasswordError] = useState(false);
+  const handlePasswordChange = (e) => {
+    if (e.target.value === "") {
+      setIsPasswordError(true);
+    } else {
+      setIsPasswordError(false);
+    }
+    setPassword(e.target.value);
+  };
+
+  const [show, setShow] = React.useState(false);
+  const handleClick = () => setShow(!show);
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <CustomNavBar />
+      <div
+        style={{
+          padding: "50px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <div style={{ display: "flex" }}>
+          <div
+            className={
+              isSelected ? "isselected-button" : "isnotselected-button"
             }
-            axios.post(`${process.env.REACT_APP_HOSTURL}/Teacher/login`, {
-                "email": emailRef.current.value,
-                "password": passwordRef.current.value
-            }).then((response) => {
-                if (response.status === 200) {
-                    dispatch(authentificateTeacher(response.data.Teacher))
-                    navigate("/")
-                }
-
-            }).catch((e) => {
-                if (e.response.status === 401) {
-                    if(e.response.data.status==="veriffail"){
-                        setLoginError('Account not verrified yet');
-
-                    }else{
-                        setLoginError('Email or password are wrong');
-
-                    }
-                }
-                console.log(e);
-            })
-        } else {
-            axios.post(`${process.env.REACT_APP_HOSTURL}/client/login`, {
-                "email": emailRef.current.value,
-                "password": passwordRef.current.value
-            }).then((response) => {
-                console.log(response);
-                if (response.status === 200) {
-                    dispatch(authentificateClient(response.data.client))
-                    navigate("/");
-                }
-
-            }).catch((e) => {
-                if (e.response.status === 401) {
-                    setLoginError('Email or password are wrong');
-                }
-                console.log(e);
-            })
-        }*/
-    }
-
-    const handleTest = () => {
-        if (isSelected) {
-            emailRef.current.value = "john@gmail.com";
-            passwordRef.current.value = "123"
-
-        } else {
-            emailRef.current.value = "chaima@gmail.com";
-            passwordRef.current.value = "123"
-        }
-    }
-
-
-    return (
-        <div style={{padding:"20px"}}>
-            <CustomNavBar/>
-            <div style={{ padding: "50px", display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-                <div style={{display:"flex"}}>
-                    <div className={isSelected ? 'isselected-button' : 'isnotselected-button'} onClick={() => {
-                        setIsSelected(true);
-                    }}>
-                        As Teacher
-                    </div>
-                    <div className={isSelected ? 'isnotselected-button' : 'isselected-button'} onClick={() => {
-                        setIsSelected(false);
-                    }}>
-                        As Client
-                    </div>
-                </div>
-                <br></br>
-                {loginError && <span className='error-message'>{loginError}</span>}
-
-                <div style={{ display: "flex", justifyContent: "space-around", width: "100%" }}>
-                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", width: "100%" }}>
-                        <h2 style={{ textAlign: "start" }}>
-                            Email<sup>*</sup>
-                        </h2>
-                        <div className='input-box'>
-                            <input className='input-style' placeholder='' ref={emailRef}></input>
-                        </div>
-                    </div>
-                    <div style={{ display: "flex", marginLeft: "100px", flexDirection: "column", justifyContent: "start", alignItems: "start", width: "100%" }}>
-                        <h2 style={{ textAlign: "start" }}>
-                            Password<sup>*</sup>
-                        </h2>
-                        <div className='input-box'>
-                            <input className='input-style' placeholder='' type='password' ref={passwordRef}></input>
-
-                        </div>
-                    </div>
-
-                </div><br></br>
-                <div className='d-flex'>
-                    <div className='submit-button' onClick={handleLogin}>
-                        Login
-                    </div>
-                    <div className='test-button' onClick={handleTest}>
-                        Get Test Profile
-                    </div>
-                </div>
-
-
-            </div>
-
+            onClick={() => {
+              setIsSelected(true);
+            }}
+          >
+            As Teacher
+          </div>
+          <div
+            className={
+              isSelected ? "isnotselected-button" : "isselected-button"
+            }
+            onClick={() => {
+              setIsSelected(false);
+            }}
+          >
+            As Student
+          </div>
         </div>
-    );
+        <br></br>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+
+        <FormControl isInvalid={isEmailError}>
+            <FormLabel>Email</FormLabel>
+            <Input
+              type="email"
+              value={email}
+              placeholder="Email"
+              focusBorderColor="green.700"
+              onChange={handleEmailChange}
+            />
+            {isEmailError && (
+              <FormErrorMessage>Email is required.</FormErrorMessage>
+            )}
+          </FormControl>
+
+          <FormControl isInvalid={isPasswordError} >
+              <FormLabel>Password</FormLabel>
+              <InputGroup size="md">
+                <Input
+                  pr="4.5rem"
+                  type={show ? "text" : "password"}
+                  placeholder="Password"
+                  focusBorderColor="green.700"
+                  onChange={handlePasswordChange}
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handleClick}>
+                    {show ? "Hide" : "Show"}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              {isPasswordError && (
+                <FormErrorMessage>Password is required.</FormErrorMessage>
+              )}
+            </FormControl>
+          <Button
+            colorScheme="teal"
+            size="md"
+            style={{ alignSelf: "flex-end" }}
+            onClick={() => {
+              handleLogin();
+            }}
+          >
+            Log In
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Login;

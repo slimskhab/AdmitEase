@@ -1,0 +1,47 @@
+
+
+.topbar{
+    box-shadow: 0 2px 15px rgba(51,51,51,.05);
+    border-bottom: 1px solid #ededed;
+    background-color: white;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: start;
+}
+
+.blue{
+    border: #4E84FA 1px solid;
+    color:#4E84FA;
+    background-color: #F4F7FF;
+
+}
+
+.yellow{
+    border: #FFC221 1px solid;
+    color:#FFC221;
+        background-color: #FFFCF2;
+
+}
+
+.green{
+    border: #6CBD7E 1px solid;
+    color:#6CBD7E;
+        background-color: #F6FBF7;
+
+}
+
+.custom-card{
+    display: flex;
+    flex-direction: row !important;
+    height:170px;
+    align-items: center;
+    width: 30%;
+    cursor: pointer;
+
+}
+
+.card-content{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}

@@ -16,6 +16,7 @@ ul {
     display: inline-block;
     position: relative;
     margin-right: 20px;
+    cursor: pointer;
 
   }
   a:after {    
