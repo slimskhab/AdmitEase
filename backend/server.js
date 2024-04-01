@@ -32,6 +32,8 @@ db.once('open', () => {
 const TeachersRouter = require("./routes/TeacherRoutes")
 app.use("/teacher", TeachersRouter)
 
+const StudentRouter = require("./routes/StudentRoutes")
+app.use("/student", StudentRouter)
 
 
 const server = app.listen(process.env.PORT, () => {

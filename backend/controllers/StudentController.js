@@ -1,35 +1,34 @@
 
 const Counter = require("../models/counterModel")
-const Teacher = require("../models/TeacherModel")
+const Student = require("../models/StudentModel")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 
-const addTeacher = async (req, res) => {
+const addStudent = async (req, res) => {
   try {
     const counter = await Counter.findOneAndUpdate(
-      { id: "autoval" },
+      { id: "autovalStudent" },
       { $inc: { seq: 1 } },
       { new: true, upsert: true }
     );
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const teacher = new Teacher({
+    const student = new Student({
       id: counter.seq,
-
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashedPassword,
-      profilePic: req.body.profilePic,
+      interests: req.body.interests,
 
     });
 
-    await teacher.save();
+    await student.save();
 
     res.status(201).json({
       status: "success",
-      message: "Added Teacher",
-      teacher: teacher
+      message: "Added Student",
+      student: student
     });
   } catch (error) {
     console.error(error);
@@ -38,15 +37,17 @@ const addTeacher = async (req, res) => {
     });
   }
 }
-const loginTeacher = async (req, res) => {
+
+
+const loginStudent = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const teacher = await Teacher.findOne({ email });
+    const student = await Student.findOne({ email });
 
 
 
-    if (!teacher) {
+    if (!student) {
       return res.status(401).json({
         status: "fail",
         message: "Invalid email or password",
@@ -54,10 +55,10 @@ const loginTeacher = async (req, res) => {
     }
 
 
-    const passwordMatch = await bcrypt.compare(password, teacher.password);
+    const passwordMatch = await bcrypt.compare(password, student.password);
 
     const token = jwt.sign(
-      { id: teacher._id, role: "teacher",username:teacher.firstName },
+      { id: student.id, role: "student",username:student.firstName },
       process.env.JWT_SECRET
   );
 
@@ -65,8 +66,8 @@ const loginTeacher = async (req, res) => {
       res.status(200).json({
         status: "success",
         message: "Login successful",
-        teacher: teacher,
-        token:token
+        student: student,
+        token:token,
       });
     } else {
       res.status(401).json({
@@ -84,4 +85,4 @@ const loginTeacher = async (req, res) => {
 }
 
 
-module.exports = {addTeacher,loginTeacher }
+module.exports = {addStudent,loginStudent }
