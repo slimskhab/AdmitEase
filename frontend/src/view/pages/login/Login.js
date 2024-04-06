@@ -13,36 +13,18 @@ function Login(props) {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  const handleTeacherLogin = () => {
-    axios
-      .post(`${process.env.REACT_APP_BACKEND}/teacher/login`, {
-        email: email,
-        password: password,
-      })
-      .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        navigate("/");
-      });
-  };
 
-  const handleStudentLogin = () => {
-    axios
-      .post(`${process.env.REACT_APP_BACKEND}/student/login`, {
-        email: email,
-        password: password,
-      })
-      .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        navigate("/dashboard");
-      });
-  };
 
   const handleLogin = () => {
-    if (isSelected) {
-      handleTeacherLogin();
-    } else {
-      handleStudentLogin();
-    }
+    axios
+    .post(`${process.env.REACT_APP_BACKEND}/user/login`, {
+      email: email,
+      password: password,
+    })
+    .then((res) => {
+      localStorage.setItem("token", res.data.token);
+      navigate("/dashboard");
+    });
   };
 
   const [isEmailError, setIsEmailError] = useState(false);
@@ -58,6 +40,8 @@ function Login(props) {
   
   const [isPasswordError, setIsPasswordError] = useState(false);
   const handlePasswordChange = (e) => {
+
+
     if (e.target.value === "") {
       setIsPasswordError(true);
     } else {
@@ -70,7 +54,7 @@ function Login(props) {
   const handleClick = () => setShow(!show);
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "0px 20px" }}>
       <CustomNavBar />
       <div
         style={{

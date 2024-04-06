@@ -1,34 +1,34 @@
 
 const Counter = require("../models/counterModel")
-const Student = require("../models/StudentModel")
+const User = require("../models/UserModel")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 
-const addStudent = async (req, res) => {
+const addUser = async (req, res) => {
   try {
     const counter = await Counter.findOneAndUpdate(
-      { id: "autovalStudent" },
+      { id: "autovalUser" },
       { $inc: { seq: 1 } },
       { new: true, upsert: true }
     );
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const student = new Student({
+    const user = new User({
       id: counter.seq,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashedPassword,
       interests: req.body.interests,
-
+      userType:req.body.userType
     });
 
-    await student.save();
+    await user.save();
 
     res.status(201).json({
       status: "success",
-      message: "Added Student",
-      student: student
+      message: "Added User",
+      user: user
     });
   } catch (error) {
     console.error(error);
@@ -39,26 +39,23 @@ const addStudent = async (req, res) => {
 }
 
 
-const loginStudent = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const student = await Student.findOne({ email });
+    const user = await User.findOne({ email });
 
-
-
-    if (!student) {
+    if (!user) {
       return res.status(401).json({
         status: "fail",
         message: "Invalid email or password",
       });
     }
 
-
-    const passwordMatch = await bcrypt.compare(password, student.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
     const token = jwt.sign(
-      { id: student.id, role: "student",username:student.firstName },
+      { id: user.id, userType: user.userType,username:user.firstName },
       process.env.JWT_SECRET
   );
 
@@ -66,7 +63,7 @@ const loginStudent = async (req, res) => {
       res.status(200).json({
         status: "success",
         message: "Login successful",
-        student: student,
+        user: user,
         token:token,
       });
     } else {
@@ -85,4 +82,4 @@ const loginStudent = async (req, res) => {
 }
 
 
-module.exports = {addStudent,loginStudent }
+module.exports = {addUser,loginUser }

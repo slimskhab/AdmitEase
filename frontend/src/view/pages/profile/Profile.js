@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomSideBar from "../../components/CustomSideBar/CustomSideBar";
 import TopBar from "../../components/TopBar/TopBar";
+import "./Profile.css";
 import {
   Button,
   Card,
@@ -8,23 +9,48 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Heading,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Select,
   Textarea,
-  useStatStyles,
   useToast,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { UserData } from "../../../features/UserData";
 import axios from "axios";
+import {
+  faEdit,
+  faEllipsisVertical,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Profile(props) {
   const [showForm, setShowForm] = useState(false);
-  const userData=UserData();
-  const toast=useToast();
+  const userData = UserData();
+  const toast = useToast();
 
+  const [editingIndex, setEditingIndex] = useState(null);
+const [editingData, setEditingData] = useState(null);
 
+const handleEdit = (index) => {
+  setEditingIndex(index);
+  setEditingData(history[index]);
+  setShowForm(true);
+  console.log(history[index]);
+  
+  setInstitutionName(history[index].institutionName);
+  setDegreeField(history[index].degreeField); 
+  setDegreeType(history[index].degreeType);
+  setDescription(history[index].description);
+  setStartYear(history[index].startYear);
+  setEndYear(history[index].endYear);
+};
+
+  const [history, setHistory] = useState([]);
 
   const [institutionName, setInstitutionName] = useState("");
   const [isInstitutionNameError, setIsInstitutionNameError] = useState(false);
@@ -118,30 +144,81 @@ function Profile(props) {
     return isValid;
   };
 
+  const resetForm=()=>{
+    setInstitutionName("");
+    setDegreeType("");
+    setDegreeField("");
+    setDescription("");
+    setStartYear("");
+    setEndYear("");
+  }
+
   const handleSaveButton = () => {
     if (validateFields()) {
-      axios.post(`${process.env.REACT_APP_BACKEND}/academic`,{
-        "userId":userData.id,
-        "institutionName":institutionName,
-        "degreeType":degreeType,
-        "degreeField":degreeField,
-        "description":description,
-        "startYear":startYear,
-        "endYear":endYear,
-      }).then((res)=>{
-        toast({
-            title: 'Saved.',
-            description: "Academic history saved.",
-            status: 'success',
+      if(editingIndex!==null){
+        axios
+        .post(`${process.env.REACT_APP_BACKEND}/history/edit`, {
+          historyId:history[editingIndex].id,
+          institutionName: institutionName,
+          degreeType: degreeType,
+          degreeField: degreeField,
+          description: description,
+          startYear: startYear,
+          endYear: endYear,
+        })
+        .then((res) => {
+          toast({
+            title: "Updated.",
+            description: "Academic history updated!",
+            status: "success",
             duration: 9000,
             isClosable: true,
-          })
-      })
+          });
+          setHistory([
+           ...history.slice(0, editingIndex),
+            res.data.history,
+           ...history.slice(editingIndex + 1),
+          ]);
+          setShowForm(false);
+        });
+      }else{
+        axios
+        .post(`${process.env.REACT_APP_BACKEND}/history/add`, {
+          userId: userData.id,
+          institutionName: institutionName,
+          degreeType: degreeType,
+          degreeField: degreeField,
+          description: description,
+          startYear: startYear,
+          endYear: endYear,
+        })
+        .then((res) => {
+          toast({
+            title: "Saved.",
+            description: "Academic history saved.",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+          setHistory([...history, res.data]);
+        });
+      }
     }
   };
   const currentYear = new Date().getFullYear();
-
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
+
+  const fetchHistory = () => {
+    axios
+      .get(`${process.env.REACT_APP_BACKEND}/history/${userData.id}`)
+      .then((res) => {
+        setHistory(res.data.history);
+      });
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
   return (
     <div style={{ display: "flex" }}>
       <CustomSideBar selectedItem="profile" />
@@ -170,8 +247,11 @@ function Profile(props) {
                   leftIcon={<AddIcon />}
                   variant="outline"
                   onClick={() => {
+                    setEditingIndex(null);
+                    resetForm();
                     setShowForm(true);
                   }}
+                  style={{marginBottom:10}}
                 >
                   Add new education
                 </Button>
@@ -256,6 +336,7 @@ function Profile(props) {
                       onChange={handleStartYearChange}
                       placeholder="Start Year"
                       isInvalid={isStartYearError}
+                      value={startYear}
                     >
                       {years.map((year, index) => (
                         <option key={index} value={year}>
@@ -272,6 +353,7 @@ function Profile(props) {
                       <Select
                         onChange={handleEndYearChange}
                         isInvalid={isEndYearError}
+                        value={endYear}
                       >
                         {[...Array(11)].map((_, i) => (
                           <option key={i} value={parseInt(startYear) + i}>
@@ -292,6 +374,7 @@ function Profile(props) {
                     size="sm"
                     resize="vertical"
                     focusBorderColor="green.700"
+                    value={description}
                     onChange={handleDescriptionChange}
                   />
                   {isDescriptionError && (
@@ -323,6 +406,89 @@ function Profile(props) {
                 </div>
               </div>
             )}
+
+            {history.map((e, i) => {
+              return (
+                <Card
+                  style={{
+                    display: "flex",
+                    padding: 20,
+                    flexDirection: "row",
+                    width: "100%",
+                  }}
+                >
+                  <div>
+                    <span className="timeline-point">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                      </svg>
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "start",
+                      width: "100%",
+                      borderLeft: "1px solid grey",
+                      paddingLeft: "20px",
+                      marginLeft: "15px",
+                    }}
+                  >
+                    <span>
+                      {e.degreeType} - {e.degreeField}
+                    </span>
+                    <span
+                      style={{
+                        color: "var(--primary-color)",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {e.institutionName}
+                    </span>
+                    <span>
+                      from {e.startYear} To {e.endYear}
+                    </span>
+                    <p>{e.description}</p>
+                  </div>
+                  <div></div>
+                  <Menu>
+                    <MenuButton as={Button}>
+                      <FontAwesomeIcon icon={faEllipsisVertical} />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem onClick={()=>{
+                        handleEdit(i)
+                      }}>
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          style={{ marginRight: 10 }}
+                        />{" "}
+                        Edit
+                      </MenuItem>
+                      <MenuItem>
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          style={{ marginRight: 10 }}
+                        />
+                        Delete
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Card>
+              );
+            })}
           </Card>
         </div>
       </div>

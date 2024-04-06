@@ -29,12 +29,14 @@ db.once('open', () => {
 });
 
 
-const TeachersRouter = require("./routes/TeacherRoutes")
-app.use("/teacher", TeachersRouter)
+const UserRouter = require("./routes/UserRoutes")
+app.use("/user", UserRouter)
 
-const StudentRouter = require("./routes/StudentRoutes")
-app.use("/student", StudentRouter)
+const HistoryRouter = require("./routes/HistoryRoutes")
+app.use("/history", HistoryRouter)
 
+const ApplicationRouter = require("./routes/ApplicationRoutes")
+app.use("/application", ApplicationRouter)
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`server started on port ${process.env.PORT}`);

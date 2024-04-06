@@ -98,12 +98,13 @@ function Signup(props) {
   
 
 const handleStudentSignUp=()=>{
-  axios.post(`${process.env.REACT_APP_BACKEND}/student/signup`,{
+  axios.post(`${process.env.REACT_APP_BACKEND}/user/signup`,{
     "firstName":firstName,
     "lastName":lastName,
     "email":email,
     "password":password,
-    "interests":interests
+    "interests":interests,
+    "userType":"Student"
   }).then(response=>{
     navigate("/login");
 
@@ -113,11 +114,12 @@ const handleStudentSignUp=()=>{
 }
 
 const handleTeacherSignUp=()=>{
-  axios.post(`${process.env.REACT_APP_BACKEND}/teacher/signup`,{
+  axios.post(`${process.env.REACT_APP_BACKEND}/user/signup`,{
     "firstName":firstName,
     "lastName":lastName,
     "email":email,
     "password":password,
+    "userType":"Teacher"
   }).then(response=>{
     navigate("/login");
 

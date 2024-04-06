@@ -3,8 +3,10 @@ import { Divider } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import "./CustomNavBar.css";
 import { useNavigate } from "react-router-dom";
+import { UserData } from "../../../features/UserData";
 function CustomNavBar() {
   const navigate=useNavigate();
+  const userData=UserData()
   return (
     <nav
       style={{
@@ -38,6 +40,8 @@ function CustomNavBar() {
             margin: "0px 20px",
           }}
         ></div>
+        {!userData?<div>
+         
         <span style={{ cursor: "pointer", marginRight: "20px" }} onClick={()=>{
               navigate("/login")
             }}>Log In</span>
@@ -46,6 +50,14 @@ function CustomNavBar() {
             }}>
           Sign Up
         </Button>
+        </div>:
+        <Button colorScheme="teal" variant="outline" onClick={()=>{
+          navigate("/dashboard")
+        }}>
+      Dashboard
+    </Button>
+        }
+        
       </div>
     </nav>
   );
