@@ -7,6 +7,8 @@ const path  = require('path')
 
 dotenv.config();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors());
 
 
@@ -14,6 +16,7 @@ const _dirname = path.dirname("")
 const buildPath = path.join(_dirname  , "../client/build");
 
 app.use(express.static(buildPath))
+app.use('/uploads', express.static('uploads'));
 
 
 
@@ -37,6 +40,9 @@ app.use("/history", HistoryRouter)
 
 const ApplicationRouter = require("./routes/ApplicationRoutes")
 app.use("/application", ApplicationRouter)
+
+const UniversityRouter = require("./routes/UniversityRoutes")
+app.use("/university", UniversityRouter)
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`server started on port ${process.env.PORT}`);

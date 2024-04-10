@@ -39,9 +39,7 @@ const [editingData, setEditingData] = useState(null);
 const handleEdit = (index) => {
   setEditingIndex(index);
   setEditingData(history[index]);
-  setShowForm(true);
-  console.log(history[index]);
-  
+  setShowForm(true);  
   setInstitutionName(history[index].institutionName);
   setDegreeField(history[index].degreeField); 
   setDegreeType(history[index].degreeType);
@@ -200,7 +198,7 @@ const handleEdit = (index) => {
             duration: 9000,
             isClosable: true,
           });
-          setHistory([...history, res.data]);
+          setHistory([...history, res.data.history]);
         });
       }
     }

@@ -1,0 +1,28 @@
+.brand-icon{
+    font-size: 24px;
+    cursor: pointer;
+    color: #9B9B9B;
+}
+
+.brand-icon:hover{
+    color:var(--primary-color)
+}
+
+.hover-pointer{
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.hover-pointer:hover{
+    color:var(--primary-color);
+}
+
+.hover{
+    cursor: pointer;
+}
+
+.hover:hover{
+    color:var(--primary-color);
+
+}
+

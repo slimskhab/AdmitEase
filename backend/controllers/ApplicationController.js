@@ -63,11 +63,27 @@ const editApplication = async (req, res) => {
   }
 };
 
-const getAllApplication = async (req, res) => {
+const getUserApplication = async (req, res) => {
   try {
     const { userId } = req.body;
-    console.log(req.body);
     const application = await Application.find({ userId: userId });
+
+    return res.status(200).json({
+      status: "success",
+      message: "Application retrieved",
+      application: application,
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      message: "Server Error!",
+    });
+  }
+};
+
+const getAllApplication = async (req, res) => {
+  try {
+    const application = await Application.find({});
 
     return res.status(200).json({
       status: "success",
@@ -86,4 +102,5 @@ module.exports = {
   addApplication,
   editApplication,
   getAllApplication,
+  getUserApplication
 };

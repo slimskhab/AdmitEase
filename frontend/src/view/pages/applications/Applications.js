@@ -50,13 +50,27 @@ function Applications(props) {
   const [applications, setApplications] = useState([]);
 
   useEffect(() => {
-    axios
+    if(userData.userType==="Admin"){
+      axios
+      .get(`${process.env.REACT_APP_BACKEND}/application`)
+      .then((res) => {
+        setApplications(res.data.application);
+      }).catch((err) => {
+        console.log(err)
+      });
+    }else{
+      axios
       .post(`${process.env.REACT_APP_BACKEND}/application`, {
         userId: userData.id,
       })
       .then((res) => {
         setApplications(res.data.application);
+      }).catch((err) => {
+        console.log(err)
+
       });
+    }
+    
   }, []);
 
   return (
@@ -79,6 +93,8 @@ function Applications(props) {
                 <Tr>
                   <Th>Application Id</Th>
                   <Th>Institution Name</Th>
+                  {userData.userType==="Admin"&&(                  <Th>User Id</Th>
+)}
                   <Th>Status</Th>
                 </Tr>
               </Thead>
@@ -88,6 +104,9 @@ function Applications(props) {
                     <Tr>
                       <Td>#{e.id}</Td>
                       <Td>{e.institutionName}</Td>
+                      {userData.userType==="Admin"&&
+                      (                      <Td>{e.userId}</Td>
+                    )}
                       <Td>{getApplicationTag(e.status)}</Td>
                     </Tr>
                   );

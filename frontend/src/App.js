@@ -7,6 +7,7 @@ import Login from './view/pages/login/Login';
 import DashBoard from './view/pages/dashboard/DashBoard';
 import Applications from './view/pages/applications/Applications';
 import Profile from './view/pages/profile/Profile';
+import Universities from './view/pages/universities/Universities';
 function App() {
   return (
     <div className="App">
@@ -18,6 +19,7 @@ function App() {
   <Route path= "/dashboard" element ={<DashBoard/>}  />
   <Route path= "/profile" element ={<Profile/>}  />
   <Route path= "/applications" element ={<Applications/>}  />
+  <Route path= "/universities" element ={<Universities/>}  />
 
 
 </Routes>
