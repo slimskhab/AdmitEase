@@ -28,6 +28,9 @@ const UserSchema=mongoose.Schema({
     interests:{
         type:String,
     },
+    coverLetter:{
+        type:String,
+    }
 
 } ,{ timestamps: true })
 

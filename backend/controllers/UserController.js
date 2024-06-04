@@ -51,8 +51,11 @@ const loginUser = async (req, res) => {
         message: "Invalid email or password",
       });
     }
+    console.log('User found:', user.password);
+    console.log(password)
 
     const passwordMatch = await bcrypt.compare(password, user.password);
+
 
     const token = jwt.sign(
       { id: user.id, userType: user.userType,username:user.firstName },
@@ -81,5 +84,68 @@ const loginUser = async (req, res) => {
 
 }
 
+const editCoverLetter=async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { coverLetter } = req.body;
 
-module.exports = {addUser,loginUser }
+    // Find the user by ID
+    const user = await User.findOne({"id":userId});
+
+    // If user not found, return 404
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User not found',
+      });
+    }
+
+    // Update the cover letter
+    user.coverLetter = coverLetter;
+    await user.save();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Cover letter updated successfully',
+      user: user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Server Error!',
+    });
+  }
+}
+
+
+const getCoverLetter=async(req,res)=>{
+  try {
+    const userId = req.params.userId;
+
+    const user = await User.findOne({
+      "id":userId
+    });
+
+    // If user not found, return 404
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User not found',
+      });
+    }
+console.log("afzd")
+console.log(user)
+    // Return the cover letter
+    res.status(200).json({
+      status: 'success',
+      coverLetter: user.coverLetter,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Server Error!',
+    });
+  }
+}
+
+module.exports = {addUser,loginUser,editCoverLetter,getCoverLetter }

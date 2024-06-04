@@ -18,7 +18,7 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { AddIcon, CheckCircleIcon, CheckIcon, DeleteIcon } from "@chakra-ui/icons";
 import { UserData } from "../../../features/UserData";
 import axios from "axios";
 import {
@@ -29,17 +29,19 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Profile(props) {
-  const [showForm, setShowForm] = useState(false);
+  const [showHistoryForm, setShowHistoryForm] = useState(false);
   const userData = UserData();
   const toast = useToast();
 
   const [editingIndex, setEditingIndex] = useState(null);
 const [editingData, setEditingData] = useState(null);
 
+const [coverLetter,setCoverLetter] = useState(null);
+
 const handleEdit = (index) => {
   setEditingIndex(index);
   setEditingData(history[index]);
-  setShowForm(true);  
+  setShowHistoryForm(true);  
   setInstitutionName(history[index].institutionName);
   setDegreeField(history[index].degreeField); 
   setDegreeType(history[index].degreeType);
@@ -177,7 +179,7 @@ const handleEdit = (index) => {
             res.data.history,
            ...history.slice(editingIndex + 1),
           ]);
-          setShowForm(false);
+          setShowHistoryForm(false);
         });
       }else{
         axios
@@ -214,8 +216,37 @@ const handleEdit = (index) => {
       });
   };
 
+  const fetchCoverLetter=()=>{
+    axios
+      .get(`${process.env.REACT_APP_BACKEND}/user/get/${userData.id}`)
+      .then((res) => {
+        setCoverLetter(res.data.coverLetter);
+      });
+  }
+
+  const handleCoverLetterChange=(e)=>{
+    setCoverLetter(e.target.value);
+  }
+
+  const handleSaveCoverLetter=()=>{
+    axios
+    .post(`${process.env.REACT_APP_BACKEND}/user/edit/${userData.id}`,{
+      "coverLetter":coverLetter
+    })
+    .then((res) => {
+      toast({
+        title: "Saved.",
+        description: "Cover Letter updated!",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    });
+  }
+
   useEffect(() => {
     fetchHistory();
+    fetchCoverLetter();
   }, []);
   return (
     <div style={{ display: "flex" }}>
@@ -227,8 +258,36 @@ const handleEdit = (index) => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            gap:"10px"
           }}
         >
+          <Card
+            style={{
+              width: "90%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "start",
+              padding:"10px",
+              gap:"10px"
+            }}
+          >
+            <CardHeader>Cover Letter</CardHeader>
+
+            <Textarea
+                value={coverLetter}
+                focusBorderColor="green.700"
+                style={{width:"100%"}}
+                onChange={handleCoverLetterChange}
+              />
+              <Button
+                  colorScheme="teal"
+                  rightIcon={<CheckIcon />}
+                  variant="outline"
+                  onClick={handleSaveCoverLetter}
+style={{alignSelf:"flex-end"}}
+                >Save</Button>
+
+          </Card>
           <Card
             style={{
               width: "90%",
@@ -238,7 +297,7 @@ const handleEdit = (index) => {
             }}
           >
             <CardHeader>Academic History</CardHeader>
-            {!showForm && (
+            {!showHistoryForm && (
               <div style={{ padding: "0 20px" }}>
                 <Button
                   colorScheme="teal"
@@ -247,7 +306,7 @@ const handleEdit = (index) => {
                   onClick={() => {
                     setEditingIndex(null);
                     resetForm();
-                    setShowForm(true);
+                    setShowHistoryForm(true);
                   }}
                   style={{marginBottom:10}}
                 >
@@ -256,7 +315,7 @@ const handleEdit = (index) => {
               </div>
             )}
 
-            {showForm && (
+            {showHistoryForm && (
               <div
                 style={{
                   padding: "0 20px",
@@ -389,7 +448,7 @@ const handleEdit = (index) => {
                     size="md"
                     style={{ marginRight: "20px" }}
                     onClick={() => {
-                      setShowForm(false);
+                      setShowHistoryForm(false);
                     }}
                   >
                     Close
