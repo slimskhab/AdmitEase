@@ -27,6 +27,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Work from "./work/Work";
 
 function Profile(props) {
   const [showHistoryForm, setShowHistoryForm] = useState(false);
@@ -244,6 +245,9 @@ const handleEdit = (index) => {
     });
   }
 
+
+
+  
   useEffect(() => {
     fetchHistory();
     fetchCoverLetter();
@@ -547,6 +551,8 @@ style={{alignSelf:"flex-end"}}
               );
             })}
           </Card>
+
+          <Work/>
         </div>
       </div>
     </div>

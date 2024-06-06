@@ -38,6 +38,10 @@ app.use("/user", UserRouter)
 const HistoryRouter = require("./routes/HistoryRoutes")
 app.use("/history", HistoryRouter)
 
+const WorkRouter = require("./routes/WorkRoutes")
+app.use("/work", WorkRouter)
+
+
 const ApplicationRouter = require("./routes/ApplicationRoutes")
 app.use("/application", ApplicationRouter)
 

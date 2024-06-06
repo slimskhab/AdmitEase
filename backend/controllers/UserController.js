@@ -133,9 +133,7 @@ const getCoverLetter=async(req,res)=>{
         message: 'User not found',
       });
     }
-console.log("afzd")
-console.log(user)
-    // Return the cover letter
+
     res.status(200).json({
       status: 'success',
       coverLetter: user.coverLetter,
