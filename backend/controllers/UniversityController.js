@@ -72,7 +72,7 @@ const editUniversity = async (req, res) => {
         universityType,
 
         universityDescription,
-        universityImage: file || null, // Set new image path or null if no new image
+        universityImage: file || null, 
       },
       { new: true }
     );

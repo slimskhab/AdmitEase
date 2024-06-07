@@ -48,6 +48,9 @@ app.use("/application", ApplicationRouter)
 const UniversityRouter = require("./routes/UniversityRoutes")
 app.use("/university", UniversityRouter)
 
+const RecommendationRouter = require("./routes/RecommendationRoutes")
+app.use("/recommendation", RecommendationRouter)
+
 const server = app.listen(process.env.PORT, () => {
   console.log(`server started on port ${process.env.PORT}`);
 })

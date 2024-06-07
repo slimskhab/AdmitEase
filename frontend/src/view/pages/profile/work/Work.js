@@ -46,6 +46,27 @@ function Work() {
     setStartYear(work[index].startYear);
     setEndYear(work[index].endYear);
   };
+
+  const handleDelete = (index) => {
+    axios
+    .post(`${process.env.REACT_APP_BACKEND}/work/delete`, {
+      workId: work[index].id,
+    })
+    .then((res) => {
+      toast({
+        title: "Deleted.",
+        description: "Work deleted!",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      setWork([
+        ...work.slice(0, index),
+        ...work.slice(index + 1),
+      ]);
+    });
+  };
+
   
     const [work, setWork] = useState([]);
   
@@ -467,7 +488,9 @@ function Work() {
                         />{" "}
                         Edit
                       </MenuItem>
-                      <MenuItem>
+                      <MenuItem onClick={()=>{
+                        handleDelete(i);
+                      }}>
                         <FontAwesomeIcon
                           icon={faTrash}
                           style={{ marginRight: 10 }}
