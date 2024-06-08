@@ -8,6 +8,7 @@ import DashBoard from './view/pages/dashboard/DashBoard';
 import Applications from './view/pages/applications/Applications';
 import Profile from './view/pages/profile/Profile';
 import Universities from './view/pages/universities/Universities';
+import Ebooks from './view/pages/ebooks/Ebooks';
 function App() {
   return (
     <div className="App">
@@ -20,6 +21,7 @@ function App() {
   <Route path= "/profile" element ={<Profile/>}  />
   <Route path= "/applications" element ={<Applications/>}  />
   <Route path= "/universities" element ={<Universities/>}  />
+  <Route path= "/ebooks" element ={<Ebooks/>}  />
 
 
 </Routes>

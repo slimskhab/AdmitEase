@@ -26,11 +26,19 @@ navigate("/dashboard")
                 <h4>Dashboard</h4>
             </div>
             {
-                userData.userType!=="Admin"&&(<div className={`sidebar-item ${props.selectedItem === 'profile' ? 'selected' : ''}`} onClick={()=>{
+                userData.userType!=="Admin" || userData.userType!=="Teacher"&&(<div className={`sidebar-item ${props.selectedItem === 'profile' ? 'selected' : ''}`} onClick={()=>{
                     navigate("/profile")
                 }}>
                     <FontAwesomeIcon icon={faUser} style={{marginRight:20}}/>
                     <h4>My Profile</h4>
+                </div>)
+            }
+             {
+                userData.userType!=="Student" &&(<div className={`sidebar-item ${props.selectedItem === 'ebooks' ? 'selected' : ''}`} onClick={()=>{
+                    navigate("/ebooks")
+                }}>
+                    <FontAwesomeIcon icon={faFile} style={{marginRight:20}}/>
+                    <h4>E-books</h4>
                 </div>)
             }
             {

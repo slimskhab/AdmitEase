@@ -72,6 +72,7 @@ const [coverLetter,setCoverLetter] = useState(null);
             gap:"10px"
           }}
         >
+          
           <Card
             style={{
               width: "90%",

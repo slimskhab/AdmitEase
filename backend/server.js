@@ -51,6 +51,10 @@ app.use("/university", UniversityRouter)
 const RecommendationRouter = require("./routes/RecommendationRoutes")
 app.use("/recommendation", RecommendationRouter)
 
+
+const EbookRouter = require("./routes/EbookRoutes")
+app.use("/ebook", EbookRouter)
+
 const server = app.listen(process.env.PORT, () => {
   console.log(`server started on port ${process.env.PORT}`);
 })
