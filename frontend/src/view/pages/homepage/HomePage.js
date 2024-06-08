@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header/Header";
-import { Button, Tag, useToast } from "@chakra-ui/react";
+import { Button, Card, Tag, useToast } from "@chakra-ui/react";
 import Footer from "../../components/Footer/Footer";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../../../features/UserData";
+import {
+  faDownload,
+  faFilePdf,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function HomePage(props) {
   const [universities, setUniversities] = useState([]);
   const [filteredUniversities, setFilteredUniversities] = useState([]);
@@ -73,23 +79,64 @@ function HomePage(props) {
         isClosable: true,
       });
     } else {
-      axios.post(`${process.env.REACT_APP_BACKEND}/application/add`,{
-        userId:userData.id,
-        institutionName:university.universityName,
-        
-      }).then((res)=>{
-        toast({
-          title: "Application sent.",
-          description: "We've sent the application for you.",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
+      axios
+        .post(`${process.env.REACT_APP_BACKEND}/application/add`, {
+          userId: userData.id,
+          institutionName: university.universityName,
+        })
+        .then((res) => {
+          toast({
+            title: "Application sent.",
+            description: "We've sent the application for you.",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
         });
-      })
-      
     }
   };
 
+  const [ebooks, setEbooks] = useState([]);
+  const fetchEbooks = () => {
+    axios
+      .post(`${process.env.REACT_APP_BACKEND}/ebook/getAll`)
+      .then((res) => {
+        setEbooks(res.data.ebooks);
+        console.log(res.data.ebooks);
+      })
+      .catch((err) => {
+        toast({
+          title: "Error.",
+          description: "Server Error.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
+  };
+  const handleDownloadPdf = (path) => {
+    const url = `${process.env.REACT_APP_BACKEND}/${path}`;
+
+    // Create a link element
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "recommendation.pdf");
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Trigger click event on the link
+    link.click();
+
+    // Remove the link from the document
+    document.body.removeChild(link);
+
+    console.log(path);
+    console.log(url);
+  };
+  useEffect(() => {
+    fetchEbooks();
+  }, []);
   return (
     <div>
       <Header />
@@ -124,6 +171,7 @@ function HomePage(props) {
             })}
           </div>
         </div>
+
         <div
           style={{
             flexWrap: "wrap",
@@ -177,13 +225,74 @@ function HomePage(props) {
                   <Button
                     colorScheme="teal"
                     size="sm"
-                    onClick={()=>{
-                      handleApplyButton(e)
+                    onClick={() => {
+                      handleApplyButton(e);
                     }}
                   >
                     Apply
                   </Button>
                 </div>
+              );
+            })}
+        </div>
+      </div>
+
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
+        >
+          <h1 style={{ fontSize: 24 }}>E-books</h1>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+        {ebooks.length === 0 && <span>No E-books at the moment</span>}
+          {ebooks &&
+            ebooks.map((e, index) => {
+              return (
+                <Card
+                style={{
+                  flex: "1 0 calc(15% - 20px)", // Adjust percentage based on the number of columns you want
+                  maxWidth: "calc(15% - 20px)", // Adjust for spacing
+                  margin: "10px",
+                  padding: "10px",
+                  boxSizing: "border-box",
+                  height:"200px",
+                  textOverflow:"ellipsis"
+                }}
+                >
+                    <FontAwesomeIcon
+                      icon={faFilePdf}
+                      style={{
+                        padding: "20px",
+                        border: "1px solid var(--primary-color)",
+                        color: "var(--primary-color)",
+                        cursor: "pointer",
+                        fontSize: "20px",
+                        borderRadius: "10px",
+                        alignSelf:"center",
+                        margin: "10px",
+                        width:"min-content"
+                      }}
+                      onClick={()=>{
+                        handleDownloadPdf(e.ebookFile);
+                      }}
+                    />
+  <p
+    style={{
+      textAlign: "start",
+      overflow: "hidden", // Hide overflowed content
+      textOverflow: "ellipsis",
+      height: "180px", // Adjust max height for ellipsis to show
+    }}
+  >
+    {e.description}
+  </p>
+                  
+                </Card>
               );
             })}
         </div>
