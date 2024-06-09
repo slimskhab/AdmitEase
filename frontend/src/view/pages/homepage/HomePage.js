@@ -92,6 +92,14 @@ function HomePage(props) {
             duration: 9000,
             isClosable: true,
           });
+        }).catch((error)=>{
+          toast({
+            title: "Error.",
+            description: "You already applied for this university.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
         });
     }
   };

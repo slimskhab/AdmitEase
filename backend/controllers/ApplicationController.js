@@ -9,6 +9,15 @@ const addApplication = async (req, res) => {
   try {
     const { userId, institutionName } = req.body;
 
+    const existingApplication = await Application.findOne({ userId, institutionName });
+
+    if (existingApplication) {
+      return res.status(400).json({
+        status: "fail",
+        message: "User has already applied to this institution",
+      });
+    }
+
     const counter = await Counter.findOneAndUpdate(
       { id: "autovalApplication" },
       { $inc: { seq: 1 } },

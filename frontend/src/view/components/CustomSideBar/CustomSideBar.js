@@ -26,7 +26,7 @@ navigate("/dashboard")
                 <h4>Dashboard</h4>
             </div>
             {
-                (userData.userType!=="Admin" || userData.userType!=="Teacher")&&(<div className={`sidebar-item ${props.selectedItem === 'profile' ? 'selected' : ''}`} onClick={()=>{
+                (userData.userType!=="Admin" && userData.userType!=="Teacher")&&(<div className={`sidebar-item ${props.selectedItem === 'profile' ? 'selected' : ''}`} onClick={()=>{
                     navigate("/profile")
                 }}>
                     <FontAwesomeIcon icon={faUser} style={{marginRight:20}}/>

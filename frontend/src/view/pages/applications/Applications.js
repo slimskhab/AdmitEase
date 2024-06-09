@@ -109,9 +109,12 @@ const handleFetchApplication=()=>{
             }}
           >
             <span>Applications</span>
-            <Button colorScheme="teal" variant="outline" onClick={handleDownlaodCSV}>
+            {
+              userData.userType==="Admin" &&  <Button colorScheme="teal" variant="outline" onClick={handleDownlaodCSV}>
               Uplaod CSV
             </Button>
+            }
+           
           </CardHeader>
      
           <TableContainer style={{ width: "100%" }}>
