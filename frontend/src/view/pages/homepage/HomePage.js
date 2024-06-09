@@ -284,9 +284,9 @@ function HomePage(props) {
   <p
     style={{
       textAlign: "start",
-      overflow: "hidden", // Hide overflowed content
+      overflow: "hidden", 
       textOverflow: "ellipsis",
-      height: "180px", // Adjust max height for ellipsis to show
+      height: "180px",
     }}
   >
     {e.description}

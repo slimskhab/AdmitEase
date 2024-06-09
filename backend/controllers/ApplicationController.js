@@ -1,5 +1,9 @@
 const Counter = require("../models/counterModel");
 const Application = require("../models/ApplicationsModel");
+const User = require("../models/UserModel");
+const Recommendation = require("../models/RecommendationModel");
+const History = require("../models/HistoryModel");
+const Work = require("../models/WorkModel");
 
 const addApplication = async (req, res) => {
   try {
@@ -98,8 +102,72 @@ const getAllApplication = async (req, res) => {
   }
 };
 
+
+const getCSVData=async(req,res)=>{
+  const applications = await Application.find({});
+  var result=[]
+  for(let element of applications) {
+    var currentUserId=element.userId;
+    var currentUser=await User.findOne({id:currentUserId});
+    if(!currentUser || currentUser.userType!=="Student"){
+      continue;
+    }
+    var fullName=`${currentUser.firstName} ${currentUser.lastName}`
+    var email=currentUser.email;
+    var coverLetter=currentUser.coverLetter
+    var recommendations=await Recommendation.find({userId:currentUserId})
+    recommendations=recommendations.map((e)=>{
+      return `http://localhost:6005/${e.recommendationFile}`
+    });
+    var accademicHistories=await History.find({userId:currentUserId});
+    accademicHistories = accademicHistories.map((e) => {
+      const filteredObject = {
+        institutionName: e.institutionName,
+        degreeType: e.degreeType,
+        degreeField: e.degreeField,
+        startYear: e.startYear,
+        endYear: e.endYear,
+        description: e.description
+      };
+      return JSON.stringify(filteredObject, null, 2);
+    });
+
+    var workExperiences=await Work.find({userId:currentUserId});
+    workExperiences = workExperiences.map((e) => {
+      const filteredObject = {
+        companyName: e.companyName,
+        position: e.position,
+        location: e.location,
+        startYear: e.startYear,
+        endYear: e.endYear,
+        description: e.description
+      };
+      return JSON.stringify(filteredObject, null, 2);
+    });
+
+
+    result.push({
+      fullName,
+      email,
+      universityName:element.institutionName,
+      coverLetter,
+      recommendations,
+      accademicHistories,
+      workExperiences
+    })
+  }
+
+  return res.status(200).json({
+    status: "success",
+    message: "Applications retrieved",
+    applications: result,
+  })
+
+}
+
 module.exports = {
   addApplication,
+  getCSVData,
   editApplication,
   getAllApplication,
   getUserApplication

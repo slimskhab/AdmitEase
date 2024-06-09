@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
 import CustomSideBar from "../../components/CustomSideBar/CustomSideBar";
 import TopBar from "../../components/TopBar/TopBar";
 import {
@@ -15,10 +14,13 @@ import {
   Card,
   Thead,
   Tr,
+  CardHeader,
+  Button,
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon, TimeIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { UserData } from "../../../features/UserData";
+import exportFromJSON from "export-from-json";
 
 function Applications(props) {
   const getApplicationTag = (status) => {
@@ -48,28 +50,40 @@ function Applications(props) {
   const userData = UserData();
 
   const [applications, setApplications] = useState([]);
+const handleDownlaodCSV=async ()=>{
+  await axios.get(`${process.env.REACT_APP_BACKEND}/application/csv`).then((res)=>{
+    const fileName="applications";
+    const exportType=exportFromJSON.types.csv;
+    exportFromJSON({data:res.data.applications,fileName,exportType})
+  })
+}
+
+const handleFetchApplication=()=>{
+  if(userData.userType==="Admin"){
+    axios
+    .get(`${process.env.REACT_APP_BACKEND}/application`)
+    .then((res) => {
+      setApplications(res.data.application);
+    }).catch((err) => {
+      console.log(err)
+    });
+  }else{
+    axios
+    .post(`${process.env.REACT_APP_BACKEND}/application`, {
+      userId: userData.id,
+    })
+    .then((res) => {
+      setApplications(res.data.application);
+    }).catch((err) => {
+      console.log(err)
+
+    });
+  }
+}
+
 
   useEffect(() => {
-    if(userData.userType==="Admin"){
-      axios
-      .get(`${process.env.REACT_APP_BACKEND}/application`)
-      .then((res) => {
-        setApplications(res.data.application);
-      }).catch((err) => {
-        console.log(err)
-      });
-    }else{
-      axios
-      .post(`${process.env.REACT_APP_BACKEND}/application`, {
-        userId: userData.id,
-      })
-      .then((res) => {
-        setApplications(res.data.application);
-      }).catch((err) => {
-        console.log(err)
-
-      });
-    }
+    handleFetchApplication()
     
   }, []);
 
@@ -83,10 +97,23 @@ function Applications(props) {
             display: "flex",
             flexDirection: "column",
             alignItems: "start",
-            padding: "0px 20px",
+            margin:"10px"
           }}
         >
-          <span>Your Applications</span>
+         <CardHeader
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <span>Applications</span>
+            <Button colorScheme="teal" variant="outline" onClick={handleDownlaodCSV}>
+              Uplaod CSV
+            </Button>
+          </CardHeader>
+     
           <TableContainer style={{ width: "100%" }}>
             <Table variant="simple">
               <Thead>

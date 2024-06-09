@@ -29,7 +29,8 @@ import {
   FormErrorMessage,
   Textarea,
   Image,
-  useToast
+  useToast,
+  CardHeader
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -257,11 +258,10 @@ const toast=useToast();
             display: "flex",
             flexDirection: "column",
             alignItems: "start",
-            padding: "10px 20px",
             margin:"10px"
           }}
         >
-          <div
+          <CardHeader
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -273,7 +273,7 @@ const toast=useToast();
             <Button colorScheme="teal" variant="outline" onClick={onOpen}>
               Add University
             </Button>
-          </div>
+          </CardHeader>
           <TableContainer style={{ width: "100%" }}>
             <Table variant="simple">
               <Thead>
