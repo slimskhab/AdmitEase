@@ -18,7 +18,7 @@ function CustomNavBar() {
     >
       <h1 style={{ fontSize: "30px",cursor:"pointer" }} onClick={()=>{
         navigate("/")
-      }}>AdmitEase</h1>
+      }}><img src="./assets/logo.png" width={80}/></h1>
       <div style={{ display: "flex", alignItems: "center" }}>
         <ul>
           <li>

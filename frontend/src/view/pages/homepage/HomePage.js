@@ -27,6 +27,21 @@ function HomePage(props) {
   }, []);
   const [selectedType, setSelectedType] = useState("All");
 
+  const [onlineCourses, setOnlineCourses] = useState([
+    {
+      title: "title goes here",
+      description: "description goes here",
+      date: "22 Sep",
+      image: "./assets/student1.jpg",
+    },
+    {
+      title: "title goes here",
+      description: "description goes here",
+      date: "22 Sep",
+      image: "./assets/student2.jpg",
+    },
+  ]);
+
   const handleFilterUniversities = (type) => {
     setSelectedType(type);
     if (type === "All") {
@@ -92,7 +107,8 @@ function HomePage(props) {
             duration: 9000,
             isClosable: true,
           });
-        }).catch((error)=>{
+        })
+        .catch((error) => {
           toast({
             title: "Error.",
             description: "You already applied for this university.",
@@ -124,19 +140,14 @@ function HomePage(props) {
   };
   const handleDownloadPdf = (path) => {
     const url = `${process.env.REACT_APP_BACKEND}/${path}`;
-
-    // Create a link element
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", "recommendation.pdf");
 
-    // Append the link to the body
     document.body.appendChild(link);
 
-    // Trigger click event on the link
     link.click();
 
-    // Remove the link from the document
     document.body.removeChild(link);
 
     console.log(path);
@@ -257,44 +268,100 @@ function HomePage(props) {
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {ebooks.length === 0 && <span>No E-books at the moment</span>}
+          {ebooks.length === 0 && <span>No E-books at the moment</span>}
           {ebooks &&
             ebooks.map((e, index) => {
               return (
                 <Card
+                  style={{
+                    flex: "1 0 calc(15% - 20px)", // Adjust percentage based on the number of columns you want
+                    maxWidth: "calc(15% - 20px)", // Adjust for spacing
+                    margin: "10px",
+                    padding: "10px",
+                    boxSizing: "border-box",
+                    height: "200px",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faFilePdf}
+                    style={{
+                      padding: "20px",
+                      border: "1px solid var(--primary-color)",
+                      color: "var(--primary-color)",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      borderRadius: "10px",
+                      alignSelf: "center",
+                      margin: "10px",
+                      width: "min-content",
+                    }}
+                    onClick={() => {
+                      handleDownloadPdf(e.ebookFile);
+                    }}
+                  />
+                  <p
+                    style={{
+                      textAlign: "start",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      height: "180px",
+                    }}
+                  >
+                    {e.description}
+                  </p>
+                </Card>
+              );
+            })}
+        </div>
+      </div>
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
+        >
+          <h1 style={{ fontSize: 24 }}>Online Courses</h1>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+        {onlineCourses.length === 0 && <span>No online courses at the moment</span>}
+          {onlineCourses &&
+            onlineCourses.map((e, index) => {
+              return (
+                <Card
                 style={{
-                  flex: "1 0 calc(15% - 20px)", // Adjust percentage based on the number of columns you want
-                  maxWidth: "calc(15% - 20px)", // Adjust for spacing
+                  flex: "1 0 calc(50% - 20px)",
+                  maxWidth: "calc(50% - 20px)", 
                   margin: "10px",
                   padding: "10px",
                   boxSizing: "border-box",
-                  height:"200px",
-                  textOverflow:"ellipsis"
+                  textOverflow:"ellipsis",
+                  alignItems:"start",
+                  gap:"5px",
+                  cursor: "pointer",
+                }}
+
+                onClick={()=>{
+                  navigate("/signup")
                 }}
                 >
-                    <FontAwesomeIcon
-                      icon={faFilePdf}
-                      style={{
-                        padding: "20px",
-                        border: "1px solid var(--primary-color)",
-                        color: "var(--primary-color)",
-                        cursor: "pointer",
-                        fontSize: "20px",
-                        borderRadius: "10px",
-                        alignSelf:"center",
-                        margin: "10px",
-                        width:"min-content"
-                      }}
-                      onClick={()=>{
-                        handleDownloadPdf(e.ebookFile);
-                      }}
-                    />
+                    <div style={{display:"flex",height:"min-content",flexDirection:"row"}}>
+                    <img src={e.image} width={"70%"}></img>
+                    <div style={{background:"var(--primary-color)",color:"white",position:"absolute",padding:"5px",borderRadius:"10px",right:"31%"}}>
+                      {e.date.split(" ")[0]}
+                      <br>
+                      </br>
+                      {e.date.split(" ")[1]}
+                    </div>
+                    </div>
+                    <b>{e.title}</b>
   <p
     style={{
       textAlign: "start",
       overflow: "hidden", 
       textOverflow: "ellipsis",
-      height: "180px",
     }}
   >
     {e.description}
@@ -304,6 +371,22 @@ function HomePage(props) {
               );
             })}
         </div>
+      </div>
+
+
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
+        >
+          <h1 style={{ fontSize: 24 }}>Alumini Meet</h1>
+        </div>
+        <img src="./assets/student3.jpg" style={{cursor:"pointer",margin:"10px"}} onClick={()=>{
+          navigate("/login")
+        }}/>
       </div>
 
       <div
